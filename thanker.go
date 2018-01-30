@@ -1,22 +1,12 @@
 package main
 
-import "strings"
+import "errors"
 
-const GithubHost = "github.com"
+var ErrCanNotSayThanks = errors.New("can not say thanks")
 
 type Thanker interface {
 	CanProcess(p string) bool
 	SayThankYou(p string) error
-}
-
-type GithubThanker struct {}
-
-func (g *GithubThanker) CanProcess(p string) bool {
-	return strings.Index(p, GithubHost) == 0
-}
-
-func (g *GithubThanker) SayThankYou(p string) error {
-	panic("implement me")
 }
 
 
