@@ -5,6 +5,7 @@ import (
 	"os"
 	"flag"
 	"os/user"
+	"path/filepath"
 )
 
 func main() {
@@ -30,15 +31,28 @@ func main() {
 	config := NewConfig(configPath)
 	defer config.Save()
 
+	dir, err = filepath.Abs(dir)
+	if err != nil {
+		fmt.Printf("Can not get absolute path for dir: %s. Error: %e\n", dir, err)
+		os.Exit(1)
+	}
+
 	packages := getImports(dir)
+	if len(packages) == 0 {
+		fmt.Println("We didn't find any dependency")
+		os.Exit(0)
+	}
 
 	github := &GithubThanker{
 		Config: config,
 	}
 
+	maxPackageLength := maxStringLength(packages)
+
 	for _, p := range packages {
+		fmt.Print(padRight(p, " ", maxPackageLength) + " — ")
+
 		if github.CanProcess(p) {
-			fmt.Print(p + " : ")
 			err := github.SayThankYou(p)
 
 			if err != nil {
@@ -46,6 +60,8 @@ func main() {
 			} else {
 				fmt.Println("Starred")
 			}
+		} else {
+			fmt.Println("Can not say thanks")
 		}
 	}
 }

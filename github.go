@@ -58,7 +58,7 @@ func (g *GithubThanker) SayThankYou(p string) error {
 
 func (g *GithubThanker) promptUsername() {
 	var username string
-	_, err := Prompt("Enter github username: ", &username)
+	_, err := prompt("Enter github username: ", &username)
 	if err != nil {
 		fmt.Println("Can not get username")
 		os.Exit(1)
@@ -72,7 +72,7 @@ func (g *GithubThanker) promptToken() {
 	tokenUrl := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoThanks", GithubHost)
 	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenUrl)
 
-	_, err := Prompt(message, &token)
+	_, err := prompt(message, &token)
 	if err != nil {
 		fmt.Println("Can not get token")
 		os.Exit(1)
