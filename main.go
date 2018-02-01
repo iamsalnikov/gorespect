@@ -37,31 +37,27 @@ func main() {
 		os.Exit(1)
 	}
 
+	github := &GithubThanker{
+		Config: config,
+	}
+
 	packages := getImports(dir)
+	packages = github.FilterThankable(packages)
 	if len(packages) == 0 {
 		fmt.Println("We didn't find any dependency")
 		os.Exit(0)
-	}
-
-	github := &GithubThanker{
-		Config: config,
 	}
 
 	maxPackageLength := maxStringLength(packages)
 
 	for _, p := range packages {
 		fmt.Print(padRight(p, " ", maxPackageLength) + " — ")
-
-		if github.CanProcess(p) {
-			err := github.SayThankYou(p)
-
-			if err != nil {
-				fmt.Printf("Facepalm (%s)\n", err)
-			} else {
-				fmt.Println("Starred")
-			}
+		var err error
+		//err := github.SayThankYou(p)
+		if err != nil {
+			fmt.Printf("Facepalm (%s)\n", err)
 		} else {
-			fmt.Println("Can not say thanks")
+			fmt.Println("Starred")
 		}
 	}
 }

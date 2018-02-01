@@ -21,6 +21,29 @@ func (g *GithubThanker) CanProcess(p string) bool {
 	return strings.Index(p, GithubHost) == 0
 }
 
+func (g *GithubThanker) FilterThankable(pkgs []string) []string {
+	pMap := make(map[string]bool)
+	for _, p := range pkgs {
+		p = g.normalizePackageName(p, true)
+		if _, ok := pMap[p]; ok {
+			continue
+		}
+
+		if g.CanProcess(p) {
+			pMap[p] = true
+		}
+	}
+
+	res := make([]string, len(pMap))
+	var i int
+	for p := range pMap {
+		res[i] = p
+		i++
+	}
+
+	return res
+}
+
 func (g *GithubThanker) SayThankYou(p string) error {
 	if !g.Config.HasValue(GithubUserKey) {
 		g.promptUsername()
@@ -31,7 +54,7 @@ func (g *GithubThanker) SayThankYou(p string) error {
 	}
 
 	client := http.Client{}
-	request, err := http.NewRequest(http.MethodPut, "/user/starred/" + g.normalizePackageName(p), nil)
+	request, err := http.NewRequest(http.MethodPut, "/user/starred/" + g.normalizePackageName(p, false), nil)
 	if err != nil {
 		return err
 	}
@@ -81,12 +104,17 @@ func (g *GithubThanker) promptToken() {
 	g.Config.SetValue(GithubTokenKey, token)
 }
 
-func (g *GithubThanker) normalizePackageName(p string) string {
+func (g *GithubThanker) normalizePackageName(p string, useHost bool) string {
 	parts := strings.Split(p, "/")
 	if len(parts) < 3 {
 		return p
 	}
 
-	return strings.Join(parts[1:3], "/")
+	start := 1
+	if useHost {
+		start = 0
+	}
+
+	return strings.Join(parts[start:3], "/")
 }
 
