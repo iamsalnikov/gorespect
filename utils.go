@@ -21,6 +21,10 @@ func maxStringLength(strings []string) int {
 }
 
 func padRight(str, pad string, length int) string {
+	if len(pad) == 0 || length <= 0 || len(str) >= length {
+		return str
+	}
+
 	for {
 		str += pad
 		if len(str) > length {
