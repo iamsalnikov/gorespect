@@ -17,6 +17,7 @@ func getImports(dir string) []string {
 
 	if err != nil {
 		fmt.Println("error: ", err)
+		return []string{}
 	}
 
 	importsMap := make(map[string]bool)
