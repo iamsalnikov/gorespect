@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestGithubRespecter_CanProcess(t *testing.T) {
-	testCases := []map[string]interface{} {
+	testCases := []map[string]interface{}{
 		{
 			"str": "",
 			"res": false,
@@ -34,36 +34,36 @@ func TestGithubRespecter_CanProcess(t *testing.T) {
 }
 
 func TestGithubRespecter_normalizePackageName(t *testing.T) {
-	testCases := []map[string]interface{} {
+	testCases := []map[string]interface{}{
 		{
 			"package": "",
 			"useHost": false,
-			"out": "",
+			"out":     "",
 		},
 		{
 			"package": "github.com",
 			"useHost": false,
-			"out": "github.com",
+			"out":     "github.com",
 		},
 		{
 			"package": "github.com/iamsalnikov",
 			"useHost": false,
-			"out": "github.com/iamsalnikov",
+			"out":     "github.com/iamsalnikov",
 		},
 		{
 			"package": "github.com/iamsalnikov/my-respect",
 			"useHost": false,
-			"out": "iamsalnikov/my-respect",
+			"out":     "iamsalnikov/my-respect",
 		},
 		{
 			"package": "github.com/iamsalnikov/my-respect/subpackage",
 			"useHost": false,
-			"out": "iamsalnikov/my-respect",
+			"out":     "iamsalnikov/my-respect",
 		},
 		{
 			"package": "github.com/iamsalnikov/my-respect/subpackage",
 			"useHost": true,
-			"out": "github.com/iamsalnikov/my-respect",
+			"out":     "github.com/iamsalnikov/my-respect",
 		},
 	}
 
@@ -92,7 +92,7 @@ func TestGithubRespecter_FilterRespectable(t *testing.T) {
 			"pkgs": []string{"os", "github.com/iamsalnikov/my-respect", "github.com/some/package/ping"},
 			"ctrl": map[string]bool{
 				"github.com/iamsalnikov/my-respect": true,
-				"github.com/some/package": true,
+				"github.com/some/package":           true,
 			},
 		},
 	}

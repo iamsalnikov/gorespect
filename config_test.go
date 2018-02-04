@@ -1,8 +1,8 @@
 package main
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestNewConfigWithEmptyFileName(t *testing.T) {

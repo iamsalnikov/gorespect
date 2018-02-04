@@ -1,25 +1,25 @@
 package main
 
 import (
-	"errors"
-	"sync"
-	"os"
 	"encoding/json"
+	"errors"
+	"os"
+	"sync"
 )
 
 var ValueNotFound = errors.New("value not found")
 
 type Config struct {
-	filePath string
-	config map[string]interface{}
+	filePath  string
+	config    map[string]interface{}
 	dataMutex *sync.Mutex
 }
 
 func NewConfig(filePath string) *Config {
 	c := &Config{
-		filePath: filePath,
+		filePath:  filePath,
 		dataMutex: &sync.Mutex{},
-		config: make(map[string]interface{}),
+		config:    make(map[string]interface{}),
 	}
 
 	if filePath == "" {

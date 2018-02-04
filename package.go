@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"strings"
-	"os"
 	"github.com/golang/dep/gps/pkgtree"
+	"os"
+	"strings"
 )
 
 func getImports(dir string) []string {
-	currentPackage := strings.Replace(dir, os.Getenv("GOPATH") + "/src/", "", 1)
+	currentPackage := strings.Replace(dir, os.Getenv("GOPATH")+"/src/", "", 1)
 
 	pkgs, err := pkgtree.ListPackages(
 		dir,

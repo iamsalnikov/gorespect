@@ -3,17 +3,17 @@ package main
 import "testing"
 
 func TestMaxStringLength(t *testing.T) {
-	testCases := []map[string]interface{} {
+	testCases := []map[string]interface{}{
 		{
-			"length": 0,
+			"length":  0,
 			"strings": []string{},
 		},
 		{
-			"length": 2,
+			"length":  2,
 			"strings": []string{"ab"},
 		},
 		{
-			"length": 3,
+			"length":  3,
 			"strings": []string{"ab", "abc", "a"},
 		},
 	}
@@ -30,48 +30,48 @@ func TestMaxStringLength(t *testing.T) {
 }
 
 func TestPadRight(t *testing.T) {
-	testCases := []map[string]interface{} {
+	testCases := []map[string]interface{}{
 		{
-			"src": "",
+			"src":       "",
 			"padSymbol": "",
 			"padLength": -1,
-			"out": "",
+			"out":       "",
 		},
 		{
-			"src": "a",
+			"src":       "a",
 			"padSymbol": "",
 			"padLength": 10,
-			"out": "a",
+			"out":       "a",
 		},
 		{
-			"src": "a",
+			"src":       "a",
 			"padSymbol": " ",
 			"padLength": 0,
-			"out": "a",
+			"out":       "a",
 		},
 		{
-			"src": "a",
+			"src":       "a",
 			"padSymbol": " ",
 			"padLength": -1,
-			"out": "a",
+			"out":       "a",
 		},
 		{
-			"src": "a",
+			"src":       "a",
 			"padSymbol": " ",
 			"padLength": 1,
-			"out": "a",
+			"out":       "a",
 		},
 		{
-			"src": "ab",
+			"src":       "ab",
 			"padSymbol": " ",
 			"padLength": 1,
-			"out": "ab",
+			"out":       "ab",
 		},
 		{
-			"src": "ab",
+			"src":       "ab",
 			"padSymbol": " ",
 			"padLength": 4,
-			"out": "ab  ",
+			"out":       "ab  ",
 		},
 	}
 

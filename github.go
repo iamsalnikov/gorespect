@@ -1,24 +1,24 @@
 package main
 
 import (
-	"strings"
-	"net/url"
-	"net/http"
-	"fmt"
 	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+	"strings"
 )
 
 const (
-	GithubHost = "github.com"
-	GithubApiHost = "api.github.com"
-	GithubUserKey = "github.user"
+	GithubHost     = "github.com"
+	GithubApiHost  = "api.github.com"
+	GithubUserKey  = "github.user"
 	GithubTokenKey = "github.token"
 )
 
 var (
-	ErrCanNotSayRespect = errors.New("can not say respect")
+	ErrCanNotSayRespect  = errors.New("can not say respect")
 	ErrCanNotGetUsername = errors.New("can not get username")
-	ErrCanNotGetToken = errors.New("can not get token")
+	ErrCanNotGetToken    = errors.New("can not get token")
 )
 
 type GithubRespecter struct {
@@ -72,7 +72,7 @@ func (g *GithubRespecter) SetUp() error {
 
 func (g *GithubRespecter) SayRespect(p string) error {
 	client := http.Client{}
-	request, err := http.NewRequest(http.MethodPut, "/user/starred/" + g.normalizePackageName(p, false), nil)
+	request, err := http.NewRequest(http.MethodPut, "/user/starred/"+g.normalizePackageName(p, false), nil)
 	if err != nil {
 		return err
 	}
@@ -137,4 +137,3 @@ func (g *GithubRespecter) normalizePackageName(p string, useHost bool) string {
 
 	return strings.Join(parts[start:3], "/")
 }
-

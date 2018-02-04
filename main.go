@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"flag"
 	"os/user"
 	"path/filepath"
 )
@@ -25,7 +25,7 @@ func main() {
 	var configPath string
 
 	flag.StringVar(&dir, "dir", defaultDir, "Directory with package")
-	flag.StringVar(&configPath, "config", usr.HomeDir + "/.my-respect.json", "Path to config file")
+	flag.StringVar(&configPath, "config", usr.HomeDir+"/.my-respect.json", "Path to config file")
 	flag.Parse()
 
 	config := NewConfig(configPath)
@@ -61,7 +61,3 @@ func main() {
 		}
 	}
 }
-
-
-
-
