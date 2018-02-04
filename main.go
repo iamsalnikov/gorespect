@@ -25,7 +25,7 @@ func main() {
 	var configPath string
 
 	flag.StringVar(&dir, "dir", defaultDir, "Directory with package")
-	flag.StringVar(&configPath, "config", usr.HomeDir + "/.thanker.json", "Path to config file")
+	flag.StringVar(&configPath, "config", usr.HomeDir + "/.my-respect.json", "Path to config file")
 	flag.Parse()
 
 	config := NewConfig(configPath)
@@ -37,27 +37,27 @@ func main() {
 		os.Exit(1)
 	}
 
-	github := &GithubThanker{
+	github := &GithubRespecter{
 		Config: config,
 	}
 
 	packages := getImports(dir)
-	packages = github.FilterThankable(packages)
+	packages = github.FilterRespectable(packages)
 	if len(packages) == 0 {
 		fmt.Println("We didn't find any dependency")
 		os.Exit(0)
 	}
 
+	github.SetUp()
 	maxPackageLength := maxStringLength(packages)
 
 	for _, p := range packages {
 		fmt.Print(padRight(p, " ", maxPackageLength) + " — ")
-		var err error
-		//err := github.SayThankYou(p)
+		err := github.SayRespect(p)
 		if err != nil {
-			fmt.Printf("Facepalm (%s)\n", err)
+			fmt.Printf("Error: %s\n", err)
 		} else {
-			fmt.Println("Starred")
+			fmt.Println("Respected")
 		}
 	}
 }
