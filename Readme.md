@@ -2,7 +2,7 @@
 
 Show your respect to packages which you use in your projects
 
-![](https://jokideo.com/wp-content/uploads/meme/2014/06/Reaction-Pic---My-respect.jpg | width=100)
+![](https://jokideo.com/wp-content/uploads/meme/2014/06/Reaction-Pic---My-respect.jpg)
 
 *Installation*
 
