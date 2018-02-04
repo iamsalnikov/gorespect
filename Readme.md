@@ -3,6 +3,7 @@
 Show your respect to packages which you use in your projects
 
 [![Build Status](https://travis-ci.org/iamsalnikov/go-respect.svg?branch=master)](https://travis-ci.org/iamsalnikov/go-respect)
+[![Go Report Card](https://goreportcard.com/badge/github.com/iamsalnikov/go-respect)](https://goreportcard.com/report/github.com/iamsalnikov/go-respect)
 
 *Installation*
 
