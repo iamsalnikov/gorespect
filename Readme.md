@@ -2,8 +2,6 @@
 
 Show your respect to packages which you use in your projects
 
-![](https://jokideo.com/wp-content/uploads/meme/2014/06/Reaction-Pic---My-respect.jpg)
-
 *Installation*
 
 ```
@@ -25,3 +23,7 @@ go-respect -dir=$GOPATH/src/github.com/vendor/package
 go-respect -c=/path/to/your/custom/config/file.json
 ```
 
+Program will give a link for generating access token in first run.
+Then it will use your token for starring repos which you use.
+
+![](https://jokideo.com/wp-content/uploads/meme/2014/06/Reaction-Pic---My-respect.jpg)
