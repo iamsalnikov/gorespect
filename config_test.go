@@ -124,7 +124,7 @@ func TestConfig_GetStringNewConfig(t *testing.T) {
 	}
 
 	if val != "" {
-		t.Errorf("I expected to get value '%s' but got '%s'", nil, val)
+		t.Errorf("I expected to get value \"\" but got '%s'", val)
 	}
 }
 
@@ -138,7 +138,7 @@ func TestConfig_GetStringUnexisting(t *testing.T) {
 	}
 
 	if val != "" {
-		t.Errorf("I expected to get value '%s' but got '%s'", nil, val)
+		t.Errorf("I expected to get value \"\" but got '%s'", val)
 	}
 }
 
