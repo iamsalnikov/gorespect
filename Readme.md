@@ -7,7 +7,7 @@ Show your respect to packages which you use in your projects
 *Installation*
 
 ```
-go get github.com/iamsalnikov/go-respect
+go get -u github.com/iamsalnikov/go-respect
 ```
 
 *Usage*
