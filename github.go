@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	githubHost     = "github.com"
-	githubAPIHost  = "api.github.com"
+	githubHost = "github.com"
+
 	githubUserKey  = "github.user"
 	githubTokenKey = "github.token"
 )
@@ -23,6 +23,8 @@ var (
 	ErrCanNotGetUsername = errors.New("can not get username")
 	// ErrCanNotGetToken show that we can not get access token of github user
 	ErrCanNotGetToken = errors.New("can not get token")
+
+	githubAPI = "https://api.github.com"
 )
 
 // GithubRespecter works with github packages
@@ -83,13 +85,10 @@ func (g *GithubRespecter) SetUp() error {
 // SayRespect func gives a star to github repos
 func (g *GithubRespecter) SayRespect(p string) error {
 	client := http.Client{}
-	request, err := http.NewRequest(http.MethodPut, "/user/starred/"+g.normalizePackageName(p, false), nil)
+	request, err := http.NewRequest(http.MethodPut, githubAPI+"/user/starred/"+g.normalizePackageName(p, false), nil)
 	if err != nil {
 		return err
 	}
-
-	request.URL.Scheme = "https"
-	request.URL.Host = githubAPIHost
 
 	user, _ := g.Config.GetString(githubUserKey)
 	password, _ := g.Config.GetString(githubTokenKey)

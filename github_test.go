@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -289,6 +291,42 @@ func TestGithubRespecter_SetUpWithExistingData(t *testing.T) {
 	}
 
 	err := github.SetUp()
+	if err != nil {
+		t.Errorf("I got unexpected error: %s", err)
+	}
+}
+
+func TestGithubRespecter_SayRespectBadResponseStatus(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	githubAPI = server.URL
+
+	github := &GithubRespecter{
+		Config: NewConfig(""),
+	}
+
+	err := github.SayRespect("")
+	if err != ErrCanNotSayRespect {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrCanNotSayRespect, err)
+	}
+}
+
+func TestGithubRespecter_SayRespect(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	githubAPI = server.URL
+
+	github := &GithubRespecter{
+		Config: NewConfig(""),
+	}
+
+	err := github.SayRespect("")
 	if err != nil {
 		t.Errorf("I got unexpected error: %s", err)
 	}
