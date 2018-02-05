@@ -25,7 +25,7 @@ func main() {
 	var configPath string
 
 	flag.StringVar(&dir, "dir", defaultDir, "Directory with package")
-	flag.StringVar(&configPath, "config", usr.HomeDir+"/.my-respect.json", "Path to config file")
+	flag.StringVar(&configPath, "config", usr.HomeDir+"/.gorespect.json", "Path to config file")
 	flag.Parse()
 
 	config := NewConfig(configPath)
@@ -43,7 +43,12 @@ func main() {
 		In:     os.Stdin,
 	}
 
-	packages := getImports(dir)
+	packages, err := getImports(dir)
+	if err != nil {
+		fmt.Printf("Can not get dependencies: %s", err)
+		os.Exit(1)
+	}
+
 	packages = github.FilterRespectable(packages)
 	if len(packages) == 0 {
 		fmt.Println("We didn't find any dependency")

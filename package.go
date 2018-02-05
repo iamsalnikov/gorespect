@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/golang/dep/gps/pkgtree"
 	"os"
 	"strings"
+
+	"github.com/golang/dep/gps/pkgtree"
 )
 
-func getImports(dir string) []string {
+func getImports(dir string) ([]string, error) {
 	currentPackage := strings.Replace(dir, os.Getenv("GOPATH")+"/src/", "", 1)
 
 	pkgs, err := pkgtree.ListPackages(
@@ -16,8 +16,7 @@ func getImports(dir string) []string {
 	)
 
 	if err != nil {
-		fmt.Println("error: ", err)
-		return []string{}
+		return []string{}, err
 	}
 
 	importsMap := make(map[string]bool)
@@ -38,5 +37,5 @@ func getImports(dir string) []string {
 		i++
 	}
 
-	return imports
+	return imports, nil
 }

@@ -121,7 +121,7 @@ func (g *GithubRespecter) promptUsername() error {
 
 func (g *GithubRespecter) promptToken() error {
 	var token string
-	tokenURL := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoMyRespect", githubHost)
+	tokenURL := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoRespect", githubHost)
 	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenURL)
 
 	_, err := prompt(message, &token, g.Out, g.In)
