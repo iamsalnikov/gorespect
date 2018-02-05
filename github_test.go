@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+)
 
 func TestGithubRespecter_CanProcess(t *testing.T) {
 	testCases := []map[string]interface{}{
@@ -117,5 +120,91 @@ func TestGithubRespecter_FilterRespectable(t *testing.T) {
 				t.Errorf("I expected to see package %s but do not see it", r)
 			}
 		}
+	}
+}
+
+func TestGithubRespecter_promptUsernameErr(t *testing.T) {
+	config := NewConfig("")
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     &bytes.Buffer{},
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.promptUsername()
+	if err != ErrCanNotGetUsername {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrCanNotGetUsername, err)
+	}
+}
+
+func TestGithubRespecter_promptUsername(t *testing.T) {
+	config := NewConfig("")
+
+	username := "username"
+	in := bytes.NewBufferString(username)
+	out := &bytes.Buffer{}
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     in,
+		Out:    out,
+	}
+
+	err := github.promptUsername()
+	if err != nil {
+		t.Errorf("I got undexpected error \"%s\"", err)
+	}
+
+	gu, err := config.GetString(githubUserKey)
+	if err != nil {
+		t.Errorf("I got undexpected error \"%s\"", err)
+	}
+
+	if gu != username {
+		t.Errorf("I expected to get username \"%s\" but got \"%s\"", username, gu)
+	}
+}
+
+func TestGithubRespecter_promptTokenErr(t *testing.T) {
+	config := NewConfig("")
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     &bytes.Buffer{},
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.promptToken()
+	if err != ErrCanNotGetToken {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrCanNotGetToken, err)
+	}
+}
+
+func TestGithubRespecter_promptToken(t *testing.T) {
+	config := NewConfig("")
+
+	token := "token"
+	in := bytes.NewBufferString(token)
+	out := &bytes.Buffer{}
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     in,
+		Out:    out,
+	}
+
+	err := github.promptToken()
+	if err != nil {
+		t.Errorf("I got undexpected error \"%s\"", err)
+	}
+
+	ct, err := config.GetString(githubTokenKey)
+	if err != nil {
+		t.Errorf("I got undexpected error \"%s\"", err)
+	}
+
+	if ct != token {
+		t.Errorf("I expected to get username \"%s\" but got \"%s\"", token, ct)
 	}
 }

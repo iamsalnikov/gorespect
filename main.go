@@ -39,6 +39,8 @@ func main() {
 
 	github := &GithubRespecter{
 		Config: config,
+		Out:    os.Stdout,
+		In:     os.Stdin,
 	}
 
 	packages := getImports(dir)
@@ -48,7 +50,12 @@ func main() {
 		os.Exit(0)
 	}
 
-	github.SetUp()
+	err = github.SetUp()
+	if err != nil {
+		fmt.Println("Can not configure github")
+		os.Exit(1)
+	}
+
 	maxPackageLength := maxStringLength(packages)
 
 	for _, p := range packages {

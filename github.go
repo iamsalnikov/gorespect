@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -27,6 +28,8 @@ var (
 // GithubRespecter works with github packages
 type GithubRespecter struct {
 	Config *Config
+	Out    io.Writer
+	In     io.Reader
 }
 
 // CanProcess func checks if we can work with this package
@@ -107,7 +110,7 @@ func (g *GithubRespecter) SayRespect(p string) error {
 
 func (g *GithubRespecter) promptUsername() error {
 	var username string
-	_, err := prompt("Enter github username: ", &username)
+	_, err := prompt("Enter github username: ", &username, g.Out, g.In)
 	if err != nil {
 		return ErrCanNotGetUsername
 	}
@@ -122,7 +125,7 @@ func (g *GithubRespecter) promptToken() error {
 	tokenURL := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoMyRespect", githubHost)
 	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenURL)
 
-	_, err := prompt(message, &token)
+	_, err := prompt(message, &token, g.Out, g.In)
 	if err != nil {
 		return ErrCanNotGetToken
 	}
