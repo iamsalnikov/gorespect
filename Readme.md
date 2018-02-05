@@ -4,8 +4,8 @@ Show your respect to packages which you use in your projects
 
 [![Build Status](https://travis-ci.org/iamsalnikov/gorespect.svg?branch=master)](https://travis-ci.org/iamsalnikov/gorespect)
 [![Go Report Card](https://goreportcard.com/badge/github.com/iamsalnikov/gorespect)](https://goreportcard.com/report/github.com/iamsalnikov/gorespect)
-[![Exago](https://api.exago.io/badge/tests/github.com/iamsalnikov/gorespect)](https://exago.io/project/github.com/iamsalnikov/gorespect)
-[![Exago](https://api.exago.io/badge/cov/github.com/iamsalnikov/gorespect)](https://exago.io/project/github.com/iamsalnikov/gorespect)
+[![Exago](https://api.exago.io/badge/tests/github.com/iamsalnikov/gorespect)](https://www.exago.io/project/github.com/iamsalnikov/gorespect)
+[![Exago](https://api.exago.io/badge/cov/github.com/iamsalnikov/gorespect)](https://www.exago.io/project/github.com/iamsalnikov/gorespect)
 
 *Installation*
 
