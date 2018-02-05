@@ -2,30 +2,30 @@
 
 Show your respect to packages which you use in your projects
 
-[![Build Status](https://travis-ci.org/iamsalnikov/go-respect.svg?branch=master)](https://travis-ci.org/iamsalnikov/go-respect)
-[![Go Report Card](https://goreportcard.com/badge/github.com/iamsalnikov/go-respect)](https://goreportcard.com/report/github.com/iamsalnikov/go-respect)
-[![Exago](https://api.exago.io/badge/tests/github.com/iamsalnikov/go-respect)](https://exago.io/project/github.com/iamsalnikov/go-respect)
-[![Exago](https://api.exago.io/badge/cov/github.com/iamsalnikov/go-respect)](https://exago.io/project/github.com/iamsalnikov/go-respect)
+[![Build Status](https://travis-ci.org/iamsalnikov/gorespect.svg?branch=master)](https://travis-ci.org/iamsalnikov/gorespect)
+[![Go Report Card](https://goreportcard.com/badge/github.com/iamsalnikov/gorespect)](https://goreportcard.com/report/github.com/iamsalnikov/gorespect)
+[![Exago](https://api.exago.io/badge/tests/github.com/iamsalnikov/gorespect)](https://exago.io/project/github.com/iamsalnikov/gorespect)
+[![Exago](https://api.exago.io/badge/cov/github.com/iamsalnikov/gorespect)](https://exago.io/project/github.com/iamsalnikov/gorespect)
 
 *Installation*
 
 ```
-go get -u github.com/iamsalnikov/go-respect
+go get -u github.com/iamsalnikov/gorespect
 ```
 
 *Usage*
 
 ```
 # you can run command inside your package
-go-respect
+gorespect
 
 # you can specify package directory. Here we will show respect
 # to all dependencies of package
-go-respect -dir=$GOPATH/src/github.com/vendor/package
+gorespect -dir=$GOPATH/src/github.com/vendor/package
 
 # you can specify your own config file
 # I store here your github username and token for working with API
-go-respect -c=/path/to/your/custom/config/file.json
+gorespect -c=/path/to/your/custom/config/file.json
 ```
 
 Program will give a link for generating access token in first run.
