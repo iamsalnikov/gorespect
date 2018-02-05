@@ -92,7 +92,12 @@ func TestGithubRespecter_FilterRespectable(t *testing.T) {
 			"ctrl": map[string]bool{},
 		},
 		{
-			"pkgs": []string{"os", "github.com/iamsalnikov/my-respect", "github.com/some/package/ping"},
+			"pkgs": []string{
+				"os",
+				"github.com/iamsalnikov/my-respect",
+				"github.com/iamsalnikov/my-respect/subpackage",
+				"github.com/some/package/ping",
+			},
 			"ctrl": map[string]bool{
 				"github.com/iamsalnikov/my-respect": true,
 				"github.com/some/package":           true,
@@ -206,5 +211,85 @@ func TestGithubRespecter_promptToken(t *testing.T) {
 
 	if ct != token {
 		t.Errorf("I expected to get username \"%s\" but got \"%s\"", token, ct)
+	}
+}
+
+func TestGithubRespecter_SetUpNewUserErr(t *testing.T) {
+	config := NewConfig("")
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     &bytes.Buffer{},
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.SetUp()
+	if err != ErrCanNotGetUsername {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrCanNotGetUsername, err)
+	}
+}
+
+func TestGithubRespecter_SetUpNewUserAndNewTokenErr(t *testing.T) {
+	config := NewConfig("")
+
+	username := "username"
+	github := &GithubRespecter{
+		Config: config,
+		In:     bytes.NewBufferString(username),
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.SetUp()
+	if err != ErrCanNotGetToken {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrCanNotGetToken, err)
+	}
+
+	u, _ := config.GetString(githubUserKey)
+	if u != username {
+		t.Errorf("I expected to get \"%s\" but got \"%s\"", username, u)
+	}
+}
+
+func TestGithubRespecter_SetUpNewUserAndNewToken(t *testing.T) {
+	config := NewConfig("")
+
+	username := "username"
+	token := "token"
+	github := &GithubRespecter{
+		Config: config,
+		In:     bytes.NewBufferString(username + "\n" + token),
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.SetUp()
+	if err != nil {
+		t.Errorf("I got unexpected error: %s", err)
+	}
+
+	u, _ := config.GetString(githubUserKey)
+	if u != username {
+		t.Errorf("I expected to get \"%s\" but got \"%s\"", username, u)
+	}
+
+	ct, _ := config.GetString(githubTokenKey)
+	if ct != token {
+		t.Errorf("I expected to get \"%s\" but got \"%s\"", token, ct)
+	}
+}
+
+func TestGithubRespecter_SetUpWithExistingData(t *testing.T) {
+	config := NewConfig("")
+	config.SetValue(githubUserKey, "user")
+	config.SetValue(githubTokenKey, "token")
+
+	github := &GithubRespecter{
+		Config: config,
+		In:     &bytes.Buffer{},
+		Out:    &bytes.Buffer{},
+	}
+
+	err := github.SetUp()
+	if err != nil {
+		t.Errorf("I got unexpected error: %s", err)
 	}
 }
