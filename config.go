@@ -7,14 +7,18 @@ import (
 	"sync"
 )
 
-var ValueNotFound = errors.New("value not found")
+// ErrValueNotFound shows that value has not been found
+var ErrValueNotFound = errors.New("value not found")
 
+// Config struct for working with configuration
 type Config struct {
 	filePath  string
 	config    map[string]interface{}
 	dataMutex *sync.Mutex
 }
 
+// NewConfig function creates new config
+// if passed file exists we will read config from file
 func NewConfig(filePath string) *Config {
 	c := &Config{
 		filePath:  filePath,
@@ -38,6 +42,7 @@ func NewConfig(filePath string) *Config {
 	return c
 }
 
+// HasValue function checks value for existence
 func (c *Config) HasValue(key string) bool {
 	if c.config == nil {
 		return false
@@ -48,20 +53,23 @@ func (c *Config) HasValue(key string) bool {
 	return ok
 }
 
+// SetValue func saves new value to config
 func (c *Config) SetValue(key string, value interface{}) {
 	c.dataMutex.Lock()
 	c.config[key] = value
 	c.dataMutex.Unlock()
 }
 
+// GetValue func returns value or error (if value does not exists) by key
 func (c *Config) GetValue(key string) (interface{}, error) {
 	if c.HasValue(key) {
 		return c.config[key], nil
 	}
 
-	return nil, ValueNotFound
+	return nil, ErrValueNotFound
 }
 
+// GetString func returns string value by key and error if value does not exists
 func (c *Config) GetString(key string) (string, error) {
 	value, err := c.GetValue(key)
 	str := ""
@@ -73,6 +81,7 @@ func (c *Config) GetString(key string) (string, error) {
 	return str, err
 }
 
+// Save func writes config file if we know it's name
 func (c *Config) Save() error {
 	if c.filePath == "" {
 		return nil

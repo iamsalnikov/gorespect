@@ -9,26 +9,32 @@ import (
 )
 
 const (
-	GithubHost     = "github.com"
-	GithubApiHost  = "api.github.com"
-	GithubUserKey  = "github.user"
-	GithubTokenKey = "github.token"
+	githubHost     = "github.com"
+	githubAPIHost  = "api.github.com"
+	githubUserKey  = "github.user"
+	githubTokenKey = "github.token"
 )
 
 var (
-	ErrCanNotSayRespect  = errors.New("can not say respect")
+	// ErrCanNotSayRespect shows that we can not give a start go github repo
+	ErrCanNotSayRespect = errors.New("can not say respect")
+	// ErrCanNotGetUsername shows that we can not get username of github user
 	ErrCanNotGetUsername = errors.New("can not get username")
-	ErrCanNotGetToken    = errors.New("can not get token")
+	// ErrCanNotGetToken show that we can not get access token of github user
+	ErrCanNotGetToken = errors.New("can not get token")
 )
 
+// GithubRespecter works with github packages
 type GithubRespecter struct {
 	Config *Config
 }
 
+// CanProcess func checks if we can work with this package
 func (g *GithubRespecter) CanProcess(p string) bool {
-	return strings.Index(p, GithubHost) == 0
+	return strings.Index(p, githubHost) == 0
 }
 
+// FilterRespectable func returns packages which with we can work
 func (g *GithubRespecter) FilterRespectable(pkgs []string) []string {
 	pMap := make(map[string]bool)
 	for _, p := range pkgs {
@@ -52,15 +58,16 @@ func (g *GithubRespecter) FilterRespectable(pkgs []string) []string {
 	return res
 }
 
+// SetUp func checks config
 func (g *GithubRespecter) SetUp() error {
-	if !g.Config.HasValue(GithubUserKey) {
+	if !g.Config.HasValue(githubUserKey) {
 		err := g.promptUsername()
 		if err != nil {
 			return err
 		}
 	}
 
-	if !g.Config.HasValue(GithubTokenKey) {
+	if !g.Config.HasValue(githubTokenKey) {
 		err := g.promptToken()
 		if err != nil {
 			return err
@@ -70,6 +77,7 @@ func (g *GithubRespecter) SetUp() error {
 	return nil
 }
 
+// SayRespect func gives a star to github repos
 func (g *GithubRespecter) SayRespect(p string) error {
 	client := http.Client{}
 	request, err := http.NewRequest(http.MethodPut, "/user/starred/"+g.normalizePackageName(p, false), nil)
@@ -78,10 +86,10 @@ func (g *GithubRespecter) SayRespect(p string) error {
 	}
 
 	request.URL.Scheme = "https"
-	request.URL.Host = GithubApiHost
+	request.URL.Host = githubAPIHost
 
-	user, _ := g.Config.GetString(GithubUserKey)
-	password, _ := g.Config.GetString(GithubTokenKey)
+	user, _ := g.Config.GetString(githubUserKey)
+	password, _ := g.Config.GetString(githubTokenKey)
 
 	request.URL.User = url.UserPassword(user, password)
 
@@ -104,22 +112,22 @@ func (g *GithubRespecter) promptUsername() error {
 		return ErrCanNotGetUsername
 	}
 
-	g.Config.SetValue(GithubUserKey, username)
+	g.Config.SetValue(githubUserKey, username)
 
 	return nil
 }
 
 func (g *GithubRespecter) promptToken() error {
 	var token string
-	tokenUrl := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoMyRespect", GithubHost)
-	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenUrl)
+	tokenURL := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoMyRespect", githubHost)
+	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenURL)
 
 	_, err := prompt(message, &token)
 	if err != nil {
 		return ErrCanNotGetToken
 	}
 
-	g.Config.SetValue(GithubTokenKey, token)
+	g.Config.SetValue(githubTokenKey, token)
 
 	return nil
 }

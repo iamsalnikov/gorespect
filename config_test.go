@@ -78,8 +78,8 @@ func TestConfig_GetValueNewConfig(t *testing.T) {
 	config := NewConfig("")
 	val, err := config.GetValue("test")
 
-	if err != ValueNotFound {
-		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ValueNotFound, err)
+	if err != ErrValueNotFound {
+		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ErrValueNotFound, err)
 	}
 
 	if val != nil {
@@ -92,8 +92,8 @@ func TestConfig_GetValueUnexisting(t *testing.T) {
 	config.SetValue("me", "test")
 	val, err := config.GetValue("test")
 
-	if err != ValueNotFound {
-		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ValueNotFound, err)
+	if err != ErrValueNotFound {
+		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ErrValueNotFound, err)
 	}
 
 	if val != nil {
@@ -119,8 +119,8 @@ func TestConfig_GetStringNewConfig(t *testing.T) {
 	config := NewConfig("")
 	val, err := config.GetString("test")
 
-	if err != ValueNotFound {
-		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ValueNotFound, err)
+	if err != ErrValueNotFound {
+		t.Errorf("I expected to get error \"%s\" but got \"%s\"", ErrValueNotFound, err)
 	}
 
 	if val != "" {
@@ -133,8 +133,8 @@ func TestConfig_GetStringUnexisting(t *testing.T) {
 	config.SetValue("me", "test")
 	val, err := config.GetString("test")
 
-	if err != ValueNotFound {
-		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ValueNotFound, err)
+	if err != ErrValueNotFound {
+		t.Errorf("I expected to get error \"%s\" but got \"%v\"", ErrValueNotFound, err)
 	}
 
 	if val != "" {
