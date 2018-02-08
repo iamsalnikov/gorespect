@@ -42,22 +42,18 @@ func (g *GithubRespecter) CanProcess(p string) bool {
 // FilterRespectable func returns packages which with we can work
 func (g *GithubRespecter) FilterRespectable(pkgs []string) []string {
 	pMap := make(map[string]bool)
+	res := make([]string, 0)
+
 	for _, p := range pkgs {
 		p = g.normalizePackageName(p, true)
-		if _, ok := pMap[p]; ok {
+		if pMap[p] {
 			continue
 		}
 
 		if g.CanProcess(p) {
 			pMap[p] = true
+			res = append(res, p)
 		}
-	}
-
-	res := make([]string, len(pMap))
-	var i int
-	for p := range pMap {
-		res[i] = p
-		i++
 	}
 
 	return res
