@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -28,8 +29,9 @@ func main() {
 	flag.StringVar(&configPath, "config", usr.HomeDir+"/.gorespect.json", "Path to config file")
 	flag.Parse()
 
-	config := NewConfig(configPath)
-	defer config.Save()
+	cs := NewConfigStorage(configPath)
+	config := cs.Load()
+	defer cs.Save(config)
 
 	dir, err = filepath.Abs(dir)
 	if err != nil {
@@ -37,10 +39,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	err = setUpConfig(config, os.Stdout, os.Stdin)
+	if err != nil {
+		fmt.Printf("Could not set up config: %s\n", err)
+		os.Exit(1)
+	}
+
 	github := &GithubRespecter{
-		Config: config,
-		Out:    os.Stdout,
-		In:     os.Stdin,
+		Username: config.Github.Username,
+		Token:    config.Github.Token,
+		Out:      os.Stdout,
+		In:       os.Stdin,
 	}
 
 	packages, err := getImports(dir)
@@ -55,12 +64,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	err = github.SetUp()
-	if err != nil {
-		fmt.Println("Can not configure github")
-		os.Exit(1)
-	}
-
 	maxPackageLength := maxStringLength(packages)
 
 	for _, p := range packages {
@@ -72,4 +75,24 @@ func main() {
 			fmt.Println("Respected")
 		}
 	}
+}
+
+func setUpConfig(config *Config, out io.Writer, in io.Reader) error {
+	var err error
+
+	if config.Github.Username == "" {
+		config.Github.Username, err = promptGithubUsername(out, in)
+		if err != nil {
+			return err
+		}
+	}
+
+	if config.Github.Token == "" {
+		config.Github.Token, err = promptGithubToken(out, in)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

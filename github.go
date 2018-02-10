@@ -29,9 +29,10 @@ var (
 
 // GithubRespecter works with github packages
 type GithubRespecter struct {
-	Config *Config
-	Out    io.Writer
-	In     io.Reader
+	Username string
+	Token    string
+	Out      io.Writer
+	In       io.Reader
 }
 
 // CanProcess func checks if we can work with this package
@@ -59,25 +60,6 @@ func (g *GithubRespecter) FilterRespectable(pkgs []string) []string {
 	return res
 }
 
-// SetUp func checks config
-func (g *GithubRespecter) SetUp() error {
-	if !g.Config.HasValue(githubUserKey) {
-		err := g.promptUsername()
-		if err != nil {
-			return err
-		}
-	}
-
-	if !g.Config.HasValue(githubTokenKey) {
-		err := g.promptToken()
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // SayRespect func gives a star to github repos
 func (g *GithubRespecter) SayRespect(p string) error {
 	client := http.Client{}
@@ -86,10 +68,7 @@ func (g *GithubRespecter) SayRespect(p string) error {
 		return err
 	}
 
-	user, _ := g.Config.GetString(githubUserKey)
-	password, _ := g.Config.GetString(githubTokenKey)
-
-	request.URL.User = url.UserPassword(user, password)
+	request.URL.User = url.UserPassword(g.Username, g.Token)
 
 	response, err := client.Do(request)
 	if err != nil {
@@ -103,31 +82,27 @@ func (g *GithubRespecter) SayRespect(p string) error {
 	return nil
 }
 
-func (g *GithubRespecter) promptUsername() error {
+func promptGithubUsername(out io.Writer, in io.Reader) (string, error) {
 	var username string
-	_, err := prompt("Enter github username: ", &username, g.Out, g.In)
+	_, err := prompt("Enter github username: ", &username, out, in)
 	if err != nil {
-		return ErrCanNotGetUsername
+		return "", ErrCanNotGetUsername
 	}
 
-	g.Config.SetValue(githubUserKey, username)
-
-	return nil
+	return username, nil
 }
 
-func (g *GithubRespecter) promptToken() error {
+func promptGithubToken(out io.Writer, in io.Reader) (string, error) {
 	var token string
 	tokenURL := fmt.Sprintf("https://%s/settings/tokens/new?scopes=public_repo&description=GoRespect", githubHost)
 	message := fmt.Sprintf("Please, generate and copy token here: %s\nEnter token: ", tokenURL)
 
-	_, err := prompt(message, &token, g.Out, g.In)
+	_, err := prompt(message, &token, out, in)
 	if err != nil {
-		return ErrCanNotGetToken
+		return "", ErrCanNotGetToken
 	}
 
-	g.Config.SetValue(githubTokenKey, token)
-
-	return nil
+	return token, nil
 }
 
 func (g *GithubRespecter) normalizePackageName(p string, useHost bool) string {

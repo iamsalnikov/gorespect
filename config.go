@@ -2,99 +2,73 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
 	"sync"
 )
 
-// ErrValueNotFound shows that value has not been found
-var ErrValueNotFound = errors.New("value not found")
+// GithubConfig struct represents configuration for GithubRespecter
+type GithubConfig struct {
+	Username string `json:"username"`
+	Token    string `json:"token"`
+}
 
 // Config struct for working with configuration
 type Config struct {
-	filePath  string
-	config    map[string]interface{}
-	dataMutex *sync.Mutex
+	Github GithubConfig `json:"github"`
 }
 
-// NewConfig function creates new config
-// if passed file exists we will read config from file
-func NewConfig(filePath string) *Config {
-	c := &Config{
-		filePath:  filePath,
-		dataMutex: &sync.Mutex{},
-		config:    make(map[string]interface{}),
-	}
+// ConfigStorage struct saves and loads config
+type ConfigStorage struct {
+	FilePath string
+	m        *sync.RWMutex
+}
 
-	if filePath == "" {
+// NewConfigStorage func creates new config storage
+// If we will not pass file path then we work in-memory
+func NewConfigStorage(filePath string) *ConfigStorage {
+	return &ConfigStorage{
+		FilePath: filePath,
+		m:        &sync.RWMutex{},
+	}
+}
+
+// Load function creates new config
+func (cs *ConfigStorage) Load() *Config {
+	c := &Config{}
+
+	if cs.FilePath == "" {
 		return c
 	}
 
-	file, err := os.Open(filePath)
+	cs.m.RLock()
+	defer cs.m.RUnlock()
+
+	file, err := os.Open(cs.FilePath)
 	defer file.Close()
 	if err != nil {
 		return c
 	}
 
 	decoder := json.NewDecoder(file)
-	decoder.Decode(&c.config)
+	decoder.Decode(&c)
 
 	return c
 }
 
-// HasValue function checks value for existence
-func (c *Config) HasValue(key string) bool {
-	if c.config == nil {
-		return false
-	}
-
-	_, ok := c.config[key]
-
-	return ok
-}
-
-// SetValue func saves new value to config
-func (c *Config) SetValue(key string, value interface{}) {
-	c.dataMutex.Lock()
-	c.config[key] = value
-	c.dataMutex.Unlock()
-}
-
-// GetValue func returns value or error (if value does not exists) by key
-func (c *Config) GetValue(key string) (interface{}, error) {
-	if c.HasValue(key) {
-		return c.config[key], nil
-	}
-
-	return nil, ErrValueNotFound
-}
-
-// GetString func returns string value by key and error if value does not exists
-func (c *Config) GetString(key string) (string, error) {
-	value, err := c.GetValue(key)
-	str := ""
-
-	if value != nil {
-		str = value.(string)
-	}
-
-	return str, err
-}
-
 // Save func writes config file if we know it's name
-func (c *Config) Save() error {
-	if c.filePath == "" {
+func (cs *ConfigStorage) Save(c *Config) error {
+	if cs.FilePath == "" {
 		return nil
 	}
 
-	c.dataMutex.Lock()
-	defer c.dataMutex.Unlock()
+	cs.m.Lock()
+	defer cs.m.Unlock()
 
-	file, err := os.Open(c.filePath)
+	file, err := os.Open(cs.FilePath)
 	defer file.Close()
 
 	if os.IsNotExist(err) {
-		file, err = os.Create(c.filePath)
+		file, err = os.Create(cs.FilePath)
 	}
 
 	if err != nil {
@@ -102,7 +76,7 @@ func (c *Config) Save() error {
 	}
 
 	encoder := json.NewEncoder(file)
-	err = encoder.Encode(&c.config)
+	err = encoder.Encode(c)
 	if err != nil {
 		return err
 	}
