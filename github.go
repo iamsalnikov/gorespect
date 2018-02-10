@@ -9,12 +9,7 @@ import (
 	"strings"
 )
 
-const (
-	githubHost = "github.com"
-
-	githubUserKey  = "github.user"
-	githubTokenKey = "github.token"
-)
+const githubHost = "github.com"
 
 var (
 	// ErrCanNotSayRespect shows that we can not give a start go github repo

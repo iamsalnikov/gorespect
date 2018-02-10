@@ -35,7 +35,7 @@ func main() {
 
 	dir, err = filepath.Abs(dir)
 	if err != nil {
-		fmt.Printf("Can not get absolute path for dir: %s. Error: %e\n", dir, err)
+		fmt.Printf("Can not get absolute path for dir: %s. Error: %s\n", dir, err)
 		os.Exit(1)
 	}
 
