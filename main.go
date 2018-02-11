@@ -45,17 +45,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	packages, err := getImports(dir)
+	if err != nil {
+		fmt.Printf("Can not get dependencies: %s", err)
+		os.Exit(1)
+	}
+
 	github := &GithubRespecter{
 		Username: config.Github.Username,
 		Token:    config.Github.Token,
 		Out:      os.Stdout,
 		In:       os.Stdin,
-	}
-
-	packages, err := getImports(dir)
-	if err != nil {
-		fmt.Printf("Can not get dependencies: %s", err)
-		os.Exit(1)
 	}
 
 	packages = github.FilterRespectable(packages)
