@@ -10,31 +10,25 @@ import (
 func getImports(dir string) ([]string, error) {
 	currentPackage := strings.Replace(dir, os.Getenv("GOPATH")+"/src/", "", 1)
 
-	pkgs, err := pkgtree.ListPackages(
-		dir,
-		"",
-	)
+	pkgs, err := pkgtree.ListPackages(dir, "")
 
 	if err != nil {
 		return []string{}, err
 	}
 
 	importsMap := make(map[string]bool)
+	imports := make([]string, 0)
 	for _, p := range pkgs.Packages {
 		for _, pn := range p.P.Imports {
 			if strings.Index(pn, currentPackage) == 0 {
 				continue
 			}
 
-			importsMap[pn] = true
+			if !importsMap[pn] {
+				importsMap[pn] = true
+				imports = append(imports, pn)
+			}
 		}
-	}
-
-	imports := make([]string, len(importsMap))
-	i := 0
-	for imp := range importsMap {
-		imports[i] = imp
-		i++
 	}
 
 	return imports, nil
