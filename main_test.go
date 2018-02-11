@@ -2,6 +2,9 @@ package main
 
 import (
 	"bytes"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -103,5 +106,45 @@ func TestSetUpExistingNewData(t *testing.T) {
 
 	if config.Github.Token != "token" {
 		t.Errorf("I expected to get \"token\" but got \"%s\"", config.Github.Token)
+	}
+}
+
+func TestSayRespect_BadResponse(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	githubAPI = server.URL
+
+	out := &bytes.Buffer{}
+	pkgs := []string{"test"}
+	github := &GithubRespecter{}
+
+	sayRespect(pkgs, github, out)
+	outStr := out.String()
+
+	if !strings.Contains(outStr, "Error") {
+		t.Errorf("I expected to see substring \"Error\" into string \"%s\"", outStr)
+	}
+}
+
+func TestSayRespect_GoodResponse(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	githubAPI = server.URL
+
+	out := &bytes.Buffer{}
+	pkgs := []string{"test"}
+	github := &GithubRespecter{}
+
+	sayRespect(pkgs, github, out)
+	outStr := out.String()
+
+	if !strings.Contains(outStr, "Respected") {
+		t.Errorf("I expected to see substring \"Respected\" into string \"%s\"", outStr)
 	}
 }

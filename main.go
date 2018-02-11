@@ -64,17 +64,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	maxPackageLength := maxStringLength(packages)
-
-	for _, p := range packages {
-		fmt.Print(padRight(p, " ", maxPackageLength) + " — ")
-		err := github.SayRespect(p)
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-		} else {
-			fmt.Println("Respected")
-		}
-	}
+	sayRespect(packages, github, os.Stdout)
 }
 
 func setUpConfig(config *Config, out io.Writer, in io.Reader) error {
@@ -95,4 +85,18 @@ func setUpConfig(config *Config, out io.Writer, in io.Reader) error {
 	}
 
 	return nil
+}
+
+func sayRespect(pkgs []string, g *GithubRespecter, out io.Writer) {
+	maxPackageLength := maxStringLength(pkgs)
+
+	for _, p := range pkgs {
+		fmt.Fprint(out, padRight(p, " ", maxPackageLength)+" — ")
+		err := g.SayRespect(p)
+		if err != nil {
+			fmt.Fprintf(out, "Error: %s\n", err)
+		} else {
+			fmt.Fprintln(out, "Respected")
+		}
+	}
 }
