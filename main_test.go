@@ -110,12 +110,8 @@ func TestSetUpExistingNewData(t *testing.T) {
 }
 
 func TestSayRespect_BadResponse(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	}
-
-	server := httptest.NewServer(http.HandlerFunc(handler))
-	githubAPI = server.URL
+	reset := stubApiServer(http.StatusOK)
+	defer reset()
 
 	out := &bytes.Buffer{}
 	pkgs := []string{"test"}
@@ -130,12 +126,8 @@ func TestSayRespect_BadResponse(t *testing.T) {
 }
 
 func TestSayRespect_GoodResponse(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNoContent)
-	}
-
-	server := httptest.NewServer(http.HandlerFunc(handler))
-	githubAPI = server.URL
+	reset := stubApiServer(http.StatusNoContent)
+	defer reset()
 
 	out := &bytes.Buffer{}
 	pkgs := []string{"test"}
@@ -146,5 +138,19 @@ func TestSayRespect_GoodResponse(t *testing.T) {
 
 	if !strings.Contains(outStr, "Respected") {
 		t.Errorf("I expected to see substring \"Respected\" into string \"%s\"", outStr)
+	}
+}
+
+func stubApiServer(statusCode int) func() {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(statusCode)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	oldApi := githubAPI
+	githubAPI = server.URL
+
+	return func() {
+		githubAPI = oldApi
 	}
 }
